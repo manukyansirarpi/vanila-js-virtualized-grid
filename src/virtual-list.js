@@ -28,13 +28,45 @@ class VirtualList {
     this.root.querySelector("#virtual-list").appendChild(this.fragment);
   }
 
-  render() {
-    const observer = new IntersectionObserver((entries, observer) => {
-      this.renderList(this.page++);
-    });
-    const target = this.root.querySelector("#bottom-observer");
+  handleBottomIntersection() {
+    this.renderList(this.page++);
+  }
+  handleTopIntersection() {
+    debugger;
+    console.log("handle top intersection");
+  }
 
-    observer.observe(target);
+  handleIntersections = (entries) => {
+    for (const entry of entries) {
+      if (entry.isIntersecting) {
+        if (entry.target.id == "bottom-observer") {
+          this.handleBottomIntersection();
+        } else if (entry.target.id == "top-observer") {
+          this.handleTopIntersection();
+        }
+      }
+    }
+  };
+
+  #effect() {
+    const observer = new IntersectionObserver(this.handleIntersections, {
+      threshold: 0.1,
+    });
+    observer.observe(this.root.querySelector("#bottom-observer"));
+    observer.observe(this.root.querySelector("#top-observer"));
+  }
+
+  toHTML() {
+    return `<div id="container">
+        <div id="top-observer">start..</div>
+        <div id="virtual-list"></div>
+        <div id="bottom-observer">loading..</div>
+      </div>`.trim();
+  }
+
+  render() {
+    this.root.innerHTML = this.toHTML();
+    this.#effect();
   }
 }
 
