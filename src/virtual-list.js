@@ -32,7 +32,6 @@ class VirtualList {
     this.renderList(this.page++);
   }
   handleTopIntersection() {
-    debugger;
     console.log("handle top intersection");
   }
 
